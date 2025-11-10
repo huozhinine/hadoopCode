@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+<!--设置设备备份数量-->
+<property>
+	<name>dfs.replication</name>
+	<value>3</value>
+</property>
+
+<!--指定高可用集群额名字空间-->
+<property>
+	<name>dfs.nameservices</name>
+	<value>mycluster</value>
+</property>
+<!--指定NameNode节点的名字空间-->
+<property>
+	<name>dfs.ha.namenodes.mycluster</name>
+	<value>nn1,nn2</value>
+</property>
+<!--rpc：远程调用，设置第一个远程调用的地址和端口-->
+<property>
+	<name>dfs.namenode.rpc-address.mycluster.nn1</name>
+	<value>Master01:9000</value>
+</property>
+<property>
+	<name>dfs.namenode.rpc-address.mycluster.nn2</name>
+	<value>Master02:9000</value>
+</property>
+<!--设置网页访问的地址和端口-->
+<property>
+	<name>dfs.namenode.http-address.mycluster.nn1</name>
+	<value>Master01:50070</value>
+</property>
+<property>
+	<name>dfs.namenode.http-address.mycluster.nn2</name>
+	<value>Master02:50070</value>
+</property>
+<!--设置共享edits的存放地址，将共享edits文件存放在QJournal集群中的QJCluster目录下-->
+<property>
+	<name>dfs.namenode.shared.edits.dir</name>
+	<value>qjournal://Slave01:8485;Slave02:8485;Slave03:8485/QJCluster</value>
+</property>
+<!--设置共享JournalNode节点的edits文件本地存放路径，是QJournal真实数据存放路径-->
+<property>
+	<name>dfs.journalnode.edits.dir</name>
+	<value>/home/hadoop/software/hadoop-2.7.1/QJEditsData</value>
+</property>
+
+<!--开启自动故障转移-->
+<property>
+	<name>dfs.ha.automatic-failover.enabled</name>
+	<value>true</value>
+</property>
+
+
+<!--设置HDFS客户端用来参与活动的namenode节点联系的java类-->
+<property>
+	<name>dfs.client.failover.proxy.provider.mycluster</name>
+	<value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+</property>
+
+<!--用于停止活动NameNode节点的故障转移期间的脚本，保证任何时候只有一个NameNode处于活动状态；
+SShfence参数：采用ssh方式连接活动NameNode节点，并杀掉进程；
+shell脚本：表示如果sshfence执行失败，在执行自定义的shell脚本，确定只能有一个NameNode处于活动状态-->
+<property>
+	<name>dfs.ha.fencing.methods</name>
+	<value>
+		sshfence 
+		shell(/home/hadoop/software/hadoop-2.7.1/ensure.sh)
+	</value>
+</property>
+<!--为了实现SSH登录杀掉进程，还需要配置免密登录的SSH的秘钥信息-->
+<property>
+	<name>dfs.ha.fencing.ssh.private-key-files</name>
+	<value>/home/hadoop/.ssh/id_rsa</value>
+</property>
+<!--设置ssh连接超时时间-->
+<property>
+	<name>dfs.ha.fencing.ssh.connect-timeout</name>
+	<value>3000</value>
+</property>
+
+</configuration>

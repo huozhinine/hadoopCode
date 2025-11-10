@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- 1. 项目基本信息 (您可以自定义) -->
+  <groupId>com.mycompany</groupId>
+  <artifactId>hadoop-examples</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>My Hadoop MR Examples</name>
+
+  <properties>
+    <!-- 2. 设置项目属性 -->
+    <!-- 确保这与您的集群版本一致 (您之前日志显示 2.7.1) -->
+    <hadoop.version>2.7.1</hadoop.version>
+    <java.version>1.8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+
+    <!-- 3. Hadoop 核心依赖 -->
+    <!-- 这是编写 MapReduce 作业所需的主要依赖 -->
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client</artifactId>
+      <version>${hadoop.version}</version>
+      <!--
+        !!! 关键：设置为 'provided' !!!
+        这告诉 Maven 编译时需要，但不要打包到 JAR 中。
+        因为 YARN 集群在运行时会 "提供" 这些库。
+      -->
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- 使用了 log4j (BasicConfigurator) -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- 4. Maven 编译插件 -->
+      <!-- 告诉 Maven 使用 Java 1.8 进行编译 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
